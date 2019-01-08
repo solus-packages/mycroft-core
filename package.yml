@@ -1,0 +1,84 @@
+name       : mycroft-core
+version    : 18.2.9
+release    : 1
+source     :
+    - https://github.com/MycroftAI/mycroft-core/archive/release/v18.2.9.tar.gz : eaffebb288a73071cafaf5cc47e7e530445c6f13e0415091b6ef9c0937d7e750
+license    : Apache-2.0
+component  : system.utils
+summary    : Mycroft Core, the Mycroft Artificial Intelligence platform.
+description: |
+    Mycroft is a hackable open source voice assistant.
+builddeps  :
+    - pkgconfig(python3)
+    - pyalsaaudio
+    - python-adapt-parser
+    - python-dateutil
+    - python-inflection
+    - python-pillow
+    - python-psutil
+    - python-pyee
+    - python-pyserial
+    - python-requests
+    - python-speech-recognition
+    - python-websocket-client
+    - PyAudio
+rundeps    :
+    - google-api-python-client
+    - mimic
+    - mpg123-bin
+    - pep8
+    - pyalsaaudio
+    - pychromecast
+    - pyjokes
+    - python-adapt-parser
+    - python-arrow
+    - python-beautifulsoup4
+    - python-dateutil
+    - python-feedparser
+    - python-future
+    - python-gitpython
+    - python-gtts
+    - python-inflection
+    - python-msk
+    - python-msm
+    - python-netifaces
+    - python-padatious
+    - python-parsedatetime
+    - python-pillow
+    - python-pocketsphinx
+    - python-psutil
+    - python-pulsectl
+    - python-pyee
+    - python-pyserial
+    - python-pytz
+    - python-requests-futures
+    - python-six
+    - python-speech-recognition
+    - python-tornado
+    - python-typing
+    - python-vlc
+    - python-websocket-client
+    - python-wikipedia
+    - python-xmlrunner
+    - PyAudio
+setup      : |
+    # Prepare build dir for install
+    mv mycroft-base-setup.py setup.py
+    cp mycroft-base-MANIFEST.in MANIFEST.in
+    # Let's just wipe requirements.txt because python-backports.ssl_match_hostname is now built into Python 3 and we have different versions in Solus
+    rm requirements.txt
+    touch requirements.txt
+    # Change file headers
+    sed -i -s "s,#!/usr/bin/env bash,#!/bin/bash," scripts/my-info.sh
+    sed -i -s "s,#!/usr/bin/env bash,#!/bin/bash," scripts/prepare-msm.sh
+    # Continue with setup
+    %python3_setup
+install    : |
+    # Install user services
+    install -D -m644 $pkgfiles/mycroft-audio.service $installdir/usr/lib/systemd/user/mycroft-audio.service
+    install -D -m644 $pkgfiles/mycroft-bus.service $installdir/usr/lib/systemd/user/mycroft-bus.service
+    install -D -m644 $pkgfiles/mycroft-skills.service $installdir/usr/lib/systemd/user/mycroft-skills.service
+    install -D -m644 $pkgfiles/mycroft-voice.service $installdir/usr/lib/systemd/user/mycroft-voice.service
+    install -D -m644 $pkgfiles/mycroft.target $installdir/usr/lib/systemd/user/mycroft.target
+    # Continue with install
+    %python3_install
