@@ -1,0 +1,112 @@
+From 8cf199d8810b05ace72823a377108585950466d1 Mon Sep 17 00:00:00 2001
+From: Fabio Forni <fabio@redaril.me>
+Date: Fri, 16 Aug 2019 00:56:31 +0200
+Subject: [PATCH] Make it stateless
+
+---
+ mycroft/configuration/locations.py |  8 ++++++--
+ mycroft/configuration/mycroft.conf | 31 +++++-------------------------
+ 2 files changed, 11 insertions(+), 28 deletions(-)
+
+diff --git a/mycroft/configuration/locations.py b/mycroft/configuration/locations.py
+index cbbaab6..852f9c7 100644
+--- a/mycroft/configuration/locations.py
++++ b/mycroft/configuration/locations.py
+@@ -14,13 +14,17 @@
+ import os
+ from os.path import join, dirname, expanduser, exists
+ 
+-DEFAULT_CONFIG = join(dirname(__file__), 'mycroft.conf')
++if os.path.exists('/usr/share/defaults/mycroft/mycroft.conf'):
++    DEFAULT_CONFIG = '/usr/share/defaults/mycroft/mycroft.conf'
++else:
++    # This case is only valid in tests
++    DEFAULT_CONFIG = join(dirname(__file__), 'mycroft.conf')
+ SYSTEM_CONFIG = os.environ.get('MYCROFT_SYSTEM_CONFIG',
+                                '/etc/mycroft/mycroft.conf')
+ USER_CONFIG = join(expanduser('~'), '.mycroft/mycroft.conf')
+ REMOTE_CONFIG = "mycroft.ai"
+ WEB_CONFIG_CACHE = os.environ.get('MYCROFT_WEB_CACHE',
+-                                  '/var/tmp/mycroft_web_cache.json')
++                                  expanduser('~/.mycroft/mycroft_web_cache.json'))
+ 
+ 
+ def __ensure_folder_exists(path):
+diff --git a/mycroft/configuration/mycroft.conf b/mycroft/configuration/mycroft.conf
+index 2713d23..c4895eb 100644
+--- a/mycroft/configuration/mycroft.conf
++++ b/mycroft/configuration/mycroft.conf
+@@ -28,11 +28,11 @@
+ 
+   // Time format, either 'half' (e.g. "11:37 pm") or 'full' (e.g. "23:37")
+   // Override: REMOTE
+-  "time_format": "half",
++  "time_format": "full",
+ 
+   // Date format, either 'MDY' (e.g. "11-29-1978") or 'DMY' (e.g. "29-11-1978")
+   // Override: REMOTE
+-  "date_format": "MDY",
++  "date_format": "DMY",
+ 
+   // Whether to opt in to data collection
+   // Override: REMOTE
+@@ -89,8 +89,7 @@
+     }
+   },
+ 
+-  // Also change in scripts/prepare-msm.sh
+-  "data_dir": "/opt/mycroft",
++  "data_dir": "~/.mycroft/opt",
+ 
+   // General skill values
+   "skills": {
+@@ -110,11 +109,6 @@
+     "directory": "~/.mycroft/skills",
+     // Enable auto update by msm
+     "auto_update": true,
+-    // blacklisted skills to not load
+-    // NB: This is the basename() of the directory where the skill lives, so if
+-    // the skill you want to blacklist is in /opt/mycroft/skills/mycroft-alarm.mycroftai/
+-    // then you should write "mycroft-alarm.mycroftai" below.
+-    "blacklisted_skills": ["skill-media", "send_sms", "skill-wolfram-alpha", "pianobar-skill"],
+     // priority skills to be loaded first
+     "priority_skills": ["mycroft-pairing", "mycroft-volume"],
+     // Time between updating skills in hours
+@@ -215,24 +209,9 @@
+         }
+   },
+ 
+-  // Mark 1 enclosure settings
+-  // Override: SYSTEM (e.g. Picroft)
+   "enclosure": {
+-    // Platform name
+-    // Options: 'picroft', 'mycroft_mark_1'
+-    // Override: SYSTEM (set by specific enclosures)
+-    # "platform": "picroft",
+-    # "platform_enclosure_path": "/etc/myenclosure/code.py",
+-
+-    // COMM params to the Arduino/faceplate
+-    "port": "/dev/ttyAMA0",
+-    "rate": 9600,
+-    "timeout": 5.0,
+-
+-    // ??
++    "platform": "mycroft_mark_2",
+     "update": true,
+-
+-    // Run a self test at bootup?
+     "test": false
+   },
+ 
+@@ -284,7 +263,7 @@
+     "mimic2": {
+       "lang": "en-us",
+       "url": "https://mimic-api.mycroft.ai/synthesize?text=",
+-      "preloaded_cache": "/opt/mycroft/preloaded_cache/Mimic2"
++      "preloaded_cache": "~/.mycroft/opt/preloaded_cache/Mimic2"
+     },
+     "espeak": {
+       "lang": "english-us",
+-- 
+2.22.0
+
