@@ -3,8 +3,8 @@
         <Name>mycroft-core</Name>
         <Homepage>https://mycroft.ai</Homepage>
         <Packager>
-            <Name>Joey Riches</Name>
-            <Email>josephriches@gmail.com</Email>
+            <Name>F. von Gellhorn</Name>
+            <Email>flinux@vongellhorn.ch</Email>
         </Packager>
         <License>Apache-2.0</License>
         <PartOf>system.utils</PartOf>
@@ -659,12 +659,12 @@
         </Files>
     </Package>
     <History>
-        <Update release="3">
-            <Date>2020-01-27</Date>
+        <Update release="4">
+            <Date>2020-04-10</Date>
             <Version>19.02.14</Version>
             <Comment>Packaging update</Comment>
-            <Name>Joey Riches</Name>
-            <Email>josephriches@gmail.com</Email>
+            <Name>F. von Gellhorn</Name>
+            <Email>flinux@vongellhorn.ch</Email>
         </Update>
     </History>
 </PISI>

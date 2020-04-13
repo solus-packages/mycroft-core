@@ -1,6 +1,6 @@
 name       : mycroft-core
 version    : 19.02.14
-release    : 3
+release    : 4
 source     :
     - https://github.com/MycroftAI/mycroft-core/archive/release/v19.2.14.tar.gz : be610c54770cd3faaca2ec57f8b7a8078cf659b8c408c47c25157ba3607b10a8
 license    : Apache-2.0
